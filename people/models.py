@@ -33,7 +33,9 @@ class Person(UUIDModel):
 
     @property
     def target_dossier_url(self):
-        return f'{settings.SITE_URL}dossier/{self.present_to.id}/'
+        if self.present_to:
+            return f'{settings.SITE_URL}dossier/{self.present_to.id}/'
+        return '-'
 
     @property
     def birth_year(self):
