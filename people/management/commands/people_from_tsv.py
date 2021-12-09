@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open(options['filepath']) as file:
-            reader = DictReader(file)
+            reader = DictReader(file, delimiter='\t')
 
             for row in reader:
                 person = Person.objects.create(
