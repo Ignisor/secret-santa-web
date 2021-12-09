@@ -24,6 +24,9 @@ class Command(BaseCommand):
                 )
 
                 for question, answer in row.items():
+                    if not question and answer:
+                        continue
+
                     PersonInfoPoint.objects.create(
                         person=person,
                         heading=question,
