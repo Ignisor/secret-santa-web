@@ -1,9 +1,13 @@
 from csv import DictReader
 from datetime import datetime
+from pathlib import Path
 
+from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 
 from people.models import Person, PersonInfoPoint
+
+PHOTOS_FOLDER = Path('photos/')
 
 
 class Command(BaseCommand):
@@ -22,6 +26,12 @@ class Command(BaseCommand):
                     birth_date=datetime.strptime(row.pop('birth_date'), '%d.%m.%Y'),
                     group=int(row.pop('group')),
                 )
+
+                photo_path = row.pop('photo', None)
+                if photo_path:
+                    with open(PHOTOS_FOLDER / photo_path, 'rb') as photo:
+                        img = ImageFile(photo)
+                        person.photo.save(photo_path, img)
 
                 for question, answer in row.items():
                     if not question and answer:
