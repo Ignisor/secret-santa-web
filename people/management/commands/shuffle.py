@@ -1,5 +1,5 @@
 import random
-from typing import Callable
+from typing import Callable, Set
 
 from django.core.management.base import BaseCommand
 
@@ -16,7 +16,7 @@ def person_filter(gifter: Person) -> Callable[[Person], bool]:
     return _gifted_filter
 
 
-def shuffle_presents(persons: set[Person]):
+def shuffle_presents(persons: Set[Person]):
     persons_ = list(persons)
     random.shuffle(persons_)
     for person in persons_:
@@ -28,7 +28,7 @@ def shuffle_presents(persons: set[Person]):
         person.save()
 
 
-def validate_shuffle(persons: set[Person]):
+def validate_shuffle(persons: Set[Person]):
     for person in persons:
         assert person.has_present, f'{person} wihtout present!'
         assert person.present_to is not None, f'{person} without gifted person!'
