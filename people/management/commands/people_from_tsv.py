@@ -34,7 +34,8 @@ class Command(BaseCommand):
                         person.photo.save(photo_path, img)
 
                 for question, answer in row.items():
-                    if not question and answer:
+                    if not question or not answer:
+                        print(f'Skipping empty question "{question}": "{answer}"')
                         continue
 
                     PersonInfoPoint.objects.create(
