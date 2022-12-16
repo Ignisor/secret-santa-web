@@ -1,22 +1,23 @@
 import random
-from typing import Callable, Set
 
 from django.core.management.base import BaseCommand
 
 from people.models import Person
 
 
-def person_filter(gifter: Person) -> Callable[[Person], bool]:
+def person_filter(gifter):
     def _gifted_filter(gifted: Person) -> bool:
-        return all((
-            gifter.group != gifted.group,  # exclude group
-            not gifted.has_present,  # exclude already with presents
-        ))
+        return all(
+            (
+                gifter.group != gifted.group,  # exclude group
+                not gifted.has_present,  # exclude already with presents
+            )
+        )
 
     return _gifted_filter
 
 
-def shuffle_presents(persons: Set[Person]):
+def shuffle_presents(persons):
     persons_ = list(persons)
     random.shuffle(persons_)
     for person in persons_:
@@ -28,16 +29,17 @@ def shuffle_presents(persons: Set[Person]):
         person.save()
 
 
-def validate_shuffle(persons: Set[Person]):
+def validate_shuffle(persons):
     for person in persons:
-        assert person.has_present, f'{person} wihtout present!'
-        assert person.present_to is not None, f'{person} without gifted person!'
-        assert person.group != person.present_to.group, \
-            f'Present from {person} to {person.present_to} in the same group!'
+        assert person.has_present, f"{person} wihtout present!"
+        assert person.present_to is not None, f"{person} without gifted person!"
+        assert (
+            person.group != person.present_to.group
+        ), f"Present from {person} to {person.present_to} in the same group!"
 
 
 class Command(BaseCommand):
-    help = 'Shuffles all gifters'
+    help = "Shuffles all gifters"
 
     def handle(self, *args, **options):
         Person.objects.update(present_to=None)
@@ -45,4 +47,4 @@ class Command(BaseCommand):
         validate_shuffle(set(Person.objects.all()))
 
         for person in Person.objects.all():
-            print(f'{person}: {person.target_dossier_url}')
+            print(f"{person}: {person.target_dossier_url}")
