@@ -27,7 +27,7 @@ class Person(UUIDModel):
 
     @property
     def number(self) -> int:
-        random.seed(self.id)
+        random.seed(str(self.id))  # type: ignore
         return random.randint(100, 999)
 
     @property
